@@ -1,5 +1,6 @@
 {
-    "monitor": [{
+    "max_checkups": 3,
+    "patients": [{
         "name": "av-api",
         "address": "https://api.byu.edu:443/byuoitav-av-api/0.4/health"
     }, {
