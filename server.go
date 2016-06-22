@@ -1,9 +1,10 @@
 package main
 
 import (
-	"fmt"
+	"log"
 
-	"github.com/byuoitav/avengineers-slackbot/controllers"
+	"github.com/byuoitav/avengineers-slackbot/handlers"
+	"github.com/byuoitav/avengineers-slackbot/helpers"
 	"github.com/jessemillar/health"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/engine/fasthttp"
@@ -11,22 +12,20 @@ import (
 )
 
 func main() {
-	// err := hateoas.Load("https://raw.githubusercontent.com/byuoitav/ftp-microservice/master/swagger.yml")
-	// if err != nil {
-	// 	fmt.Printf("Could not load swagger.yaml file. Error: %s", err.Error())
-	// 	panic(err)
-	// }
+	err := helpers.CheckHealth()
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	port := ":9000"
 	router := echo.New()
 	router.Pre(middleware.RemoveTrailingSlash())
 
-	// e.Get("/", hateoas.RootResponse)
 	router.Get("/health", health.Check)
 
-	router.Post("/message", controllers.Message)
-	router.Post("/slack", controllers.Slack)
+	router.Post("/message", handlers.Message)
+	router.Post("/slack", handlers.Slack)
 
-	fmt.Printf("The Avengineers Slackbot is listening on %s\n", port)
+	log.Println("The Avengineers Slackbot is listening on " + port)
 	router.Run(fasthttp.New(port))
 }

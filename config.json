@@ -1,0 +1,18 @@
+{
+    "monitor": [{
+        "name": "av-api",
+        "address": "https://api.byu.edu:443/byuoitav-av-api/0.4/health"
+    }, {
+        "name": "ftp-microservice",
+        "address": "https://api.byu.edu:443/byuoitav-ftp-microservice/0.1/health"
+    }, {
+        "name": "sony-control-microservice",
+        "address": "https://api.byu.edu:443/byuoitav-sony-control-microservice/0.1/health"
+    }, {
+        "name": "telnet-microservice",
+        "address": "https://api.byu.edu:443/byuoitav-telnet-microservice/0.1/health"
+    }, {
+        "name": "wait-for-restart-microservice",
+        "address": "https://api.byu.edu:443/byuoitav-wait-for-restart-microservice/0.1/health"
+    }]
+}
