@@ -1,7 +1,6 @@
 package helpers
 
 import (
-	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -10,11 +9,10 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestPostToSlack(test *testing.T) {
+func TestPostToSlackSuccess(test *testing.T) {
 	// Setup
 	server := httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
-		writer.Header().Set("Content-Type", "application/json")
-		fmt.Fprintln(writer, "") // Slack responds silently
+		writer.WriteHeader(http.StatusOK)
 	}))
 	defer server.Close()
 
@@ -22,4 +20,17 @@ func TestPostToSlack(test *testing.T) {
 	assert.NoError(test, err)
 
 	assert.NoError(test, PostToSlack("This is a test message"))
+}
+
+func TestPostToSlackFail(test *testing.T) {
+	// Setup
+	server := httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
+		writer.WriteHeader(http.StatusInternalServerError)
+	}))
+	defer server.Close()
+
+	err := os.Setenv("SLACKBOT_WEBHOOK", server.URL)
+	assert.NoError(test, err)
+
+	assert.Error(test, PostToSlack("This is a test message"))
 }

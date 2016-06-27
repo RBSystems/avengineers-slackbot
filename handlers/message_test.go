@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -14,20 +13,18 @@ import (
 
 var messageJSON = `{"text":"This is a test message"}`
 
-func TestMessage(test *testing.T) {
+func TestMessageSuccess(test *testing.T) {
 	// Setup
 	router := echo.New()
 	request := new(http.Request)
 	recorder := httptest.NewRecorder()
 
 	server := httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
-		writer.Header().Set("Content-Type", "application/json")
-		fmt.Fprintln(writer, "") // Slack responds silently
+		writer.WriteHeader(http.StatusOK)
 	}))
 	defer server.Close()
 
-	err := os.Setenv("SLACKBOT_WEBHOOK", server.URL)
-	assert.NoError(test, err)
+	os.Setenv("SLACKBOT_WEBHOOK", server.URL)
 
 	context := router.NewContext(standard.NewRequest(request, router.Logger()), standard.NewResponse(recorder, router.Logger()))
 	context.SetPath("/message")
@@ -37,6 +34,27 @@ func TestMessage(test *testing.T) {
 	// Assertions
 	if assert.NoError(test, Message(context)) {
 		assert.Equal(test, http.StatusOK, recorder.Code)
-		assert.Equal(test, recorder.Body.String(), "")
 	}
+}
+
+func TestMessageFail(test *testing.T) {
+	// Setup
+	router := echo.New()
+	request := new(http.Request)
+	recorder := httptest.NewRecorder()
+
+	server := httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
+		writer.WriteHeader(http.StatusInternalServerError)
+	}))
+	defer server.Close()
+
+	os.Setenv("SLACKBOT_WEBHOOK", server.URL)
+
+	context := router.NewContext(standard.NewRequest(request, router.Logger()), standard.NewResponse(recorder, router.Logger()))
+	context.SetPath("/message")
+	context.SetParamNames("body")
+	context.SetParamValues(messageJSON)
+
+	// Assertions
+	assert.Error(test, Message(context))
 }

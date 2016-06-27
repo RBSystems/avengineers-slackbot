@@ -13,6 +13,9 @@ func PostToSlack(message string) error {
 
 	request, err := http.NewRequest("POST", webhook, bytes.NewBuffer([]byte(`{"text": "`+message+`"}`)))
 	request.Header.Set("Content-Type", "application/json")
+	if err != nil {
+		return err
+	}
 
 	client := &http.Client{}
 	response, err := client.Do(request)

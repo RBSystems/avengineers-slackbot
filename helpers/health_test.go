@@ -24,26 +24,44 @@ func TestCheckHealth(test *testing.T) {
 	}
 }
 
-func TestSickResponse(test *testing.T) {
+func TestSickResponseWhenHealthy(test *testing.T) {
 	doctor := Hospital{MaxCheckups: 3}
 	patient := patient{Healthy: true, Checkups: 0}
 
 	sickResponse(&patient, &doctor, "Fake cause")
-
-	test.Logf("%+v", patient)
 
 	if patient.Healthy != true || patient.Checkups != 1 {
 		test.Fail()
 	}
 }
 
-func TestHealthyResponse(test *testing.T) {
+func TestSickResponseWhenSick(test *testing.T) {
+	doctor := Hospital{MaxCheckups: 3}
+	patient := patient{Healthy: false, Checkups: 0}
+
+	sickResponse(&patient, &doctor, "Fake cause")
+
+	if patient.Healthy != false || patient.Checkups != 0 {
+		test.Fail()
+	}
+}
+
+func TestHealthyResponseWhenHealthy(test *testing.T) {
+	doctor := Hospital{MaxCheckups: 3}
+	patient := patient{Healthy: true, Checkups: 0}
+
+	healthyResponse(&patient, &doctor)
+
+	if patient.Healthy != true || patient.Checkups != 0 {
+		test.Fail()
+	}
+}
+
+func TestHealthyResponseWhenSick(test *testing.T) {
 	doctor := Hospital{MaxCheckups: 3}
 	patient := patient{Healthy: false, Checkups: 0}
 
 	healthyResponse(&patient, &doctor)
-
-	test.Logf("%+v", patient)
 
 	if patient.Healthy != false || patient.Checkups != 1 {
 		test.Fail()
