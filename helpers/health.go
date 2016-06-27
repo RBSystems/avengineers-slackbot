@@ -54,18 +54,18 @@ func CheckHealth(doctor *Hospital) {
 
 		response, err := client.Do(request)
 		if err != nil { // If our health request times out
-			doctor.Patients[i] = sickResponse(doctor.Patients[i], doctor, "timeout")
+			doctor.Patients[i] = sickResponse(&doctor.Patients[i], doctor, "timeout")
 		} else {
 			if response.StatusCode != 200 { // If we get a bad response back
-				doctor.Patients[i] = sickResponse(doctor.Patients[i], doctor, "bad response ("+strconv.Itoa(response.StatusCode)+")")
+				doctor.Patients[i] = sickResponse(&doctor.Patients[i], doctor, "bad response ("+strconv.Itoa(response.StatusCode)+")")
 			} else { // If we get a good response
-				doctor.Patients[i] = healthyResponse(doctor.Patients[i], doctor)
+				doctor.Patients[i] = healthyResponse(&doctor.Patients[i], doctor)
 			}
 		}
 	}
 }
 
-func sickResponse(patient patient, doctor *Hospital, cause string) patient {
+func sickResponse(patient *patient, doctor *Hospital, cause string) patient {
 	if patient.Healthy == true {
 		if patient.Checkups < doctor.MaxCheckups {
 			patient.Checkups++
@@ -80,10 +80,10 @@ func sickResponse(patient patient, doctor *Hospital, cause string) patient {
 
 	log.Printf("%+v", patient)
 
-	return patient
+	return *patient
 }
 
-func healthyResponse(patient patient, doctor *Hospital) patient {
+func healthyResponse(patient *patient, doctor *Hospital) patient {
 	if patient.Healthy == false {
 		if patient.Checkups < doctor.MaxCheckups {
 			patient.Checkups++
@@ -98,5 +98,5 @@ func healthyResponse(patient patient, doctor *Hospital) patient {
 
 	log.Printf("%+v", patient)
 
-	return patient
+	return *patient
 }
