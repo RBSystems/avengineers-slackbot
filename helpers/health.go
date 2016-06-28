@@ -54,6 +54,7 @@ func CheckHealth(doctor *Hospital) {
 
 		response, err := client.Do(request)
 		if err != nil { // If our health request times out
+			log.Printf("%+v", response)
 			doctor.Patients[i] = sickResponse(&doctor.Patients[i], doctor, "timeout")
 		} else {
 			if response.StatusCode != 200 { // If we get a bad response back

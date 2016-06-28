@@ -16,8 +16,7 @@ func TestPostToSlackSuccess(test *testing.T) {
 	}))
 	defer server.Close()
 
-	err := os.Setenv("SLACKBOT_WEBHOOK", server.URL)
-	assert.NoError(test, err)
+	os.Setenv("SLACKBOT_WEBHOOK", server.URL)
 
 	assert.NoError(test, PostToSlack("This is a test message"))
 }
@@ -29,8 +28,7 @@ func TestPostToSlackFail(test *testing.T) {
 	}))
 	defer server.Close()
 
-	err := os.Setenv("SLACKBOT_WEBHOOK", server.URL)
-	assert.NoError(test, err)
+	os.Setenv("SLACKBOT_WEBHOOK", server.URL)
 
 	assert.Error(test, PostToSlack("This is a test message"))
 }
