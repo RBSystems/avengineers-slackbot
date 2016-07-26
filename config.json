@@ -7,6 +7,9 @@
         "name": "ftp-microservice",
         "address": "https://api.byu.edu:443/byuoitav-ftp-microservice/0.1/health"
     }, {
+        "name": "pjlink-microservice",
+        "address": "https://api.byu.edu:443/byuoitav-pjlink-microservice/0.1/health"
+    }, {
         "name": "sony-control-microservice",
         "address": "https://api.byu.edu:443/byuoitav-sony-control-microservice/0.1/health"
     }, {
