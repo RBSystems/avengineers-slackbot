@@ -2,12 +2,12 @@ package main
 
 import (
 	"log"
+	"net/http"
 
 	"github.com/byuoitav/avengineers-slackbot/handlers"
 	"github.com/byuoitav/avengineers-slackbot/helpers"
 	"github.com/jessemillar/health"
 	"github.com/labstack/echo"
-	"github.com/labstack/echo/engine/fasthttp"
 	"github.com/labstack/echo/middleware"
 	"github.com/robfig/cron"
 )
@@ -30,10 +30,9 @@ func main() {
 	router := echo.New()
 	router.Pre(middleware.RemoveTrailingSlash())
 
-	router.Get("/health", health.Check)
+	router.GET("/health", echo.WrapHandler(http.HandlerFunc(health.Check)))
 
-	router.Post("/message", handlers.Message)
+	router.POST("/message", handlers.Message)
 
-	log.Println("The Avengineers Slackbot is listening on " + port)
-	router.Run(fasthttp.New(port))
+	router.Start(port)
 }
